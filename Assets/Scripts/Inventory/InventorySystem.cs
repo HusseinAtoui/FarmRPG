@@ -1,45 +1,49 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class InventorySystem : MonoBehaviour
 {
-    [Header("Inventory Settings")]
     public int inventorySize = 20;
 
-    [Header("Slots")]
     public List<InventorySlot> slots = new List<InventorySlot>();
 
-    public void InitializeInventory()
-    {
-        slots.Clear();
-        for (int i = 0; i < inventorySize; i++)
-            slots.Add(new InventorySlot(null, 0));
-    }
+    public event Action OnInventoryChanged;
 
     void Awake()
     {
         InitializeInventory();
     }
 
+    public void InitializeInventory()
+    {
+        slots.Clear();
+
+        for (int i = 0; i < inventorySize; i++)
+        {
+            slots.Add(new InventorySlot(null, 0));
+        }
+    }
+
     public bool AddItem(ItemData item, int amount)
     {
-        // Try stacking first
         foreach (var slot in slots)
         {
             if (slot.item == item && item.stackable)
             {
                 slot.quantity += amount;
+                OnInventoryChanged?.Invoke();
                 return true;
             }
         }
 
-        // Find empty slot
         foreach (var slot in slots)
         {
             if (slot.item == null)
             {
                 slot.item = item;
                 slot.quantity = amount;
+                OnInventoryChanged?.Invoke();
                 return true;
             }
         }
@@ -62,6 +66,7 @@ public class InventorySystem : MonoBehaviour
                     slot.quantity = 0;
                 }
 
+                OnInventoryChanged?.Invoke();
                 return;
             }
         }
