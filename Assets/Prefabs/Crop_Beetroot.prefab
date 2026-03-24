@@ -101,6 +101,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cropName: Beetroot
-  growthStage: 0
+  growthStage: 1
   maxGrowthStage: 3
-  growthSprites: []
+  growthSprites:
+  - {fileID: 7929935949600721010, guid: 350e3bb77091342388110583f1a95805, type: 3}
+  - {fileID: -9073547677343782098, guid: 8ec9bec6733fd4869814023fc72a16ca, type: 3}
+  - {fileID: 6556523641891367704, guid: bd26094e05e0142f08bfad91475c010a, type: 3}
+  - {fileID: 30920674132646118, guid: 26c90948d834a48d2820d2e49cfa7c52, type: 3}

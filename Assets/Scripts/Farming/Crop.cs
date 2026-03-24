@@ -5,8 +5,8 @@ public class Crop : MonoBehaviour
     public string cropName = "Beetroot";
     public int growthStage = 0;
     public int maxGrowthStage = 3;
+    public Sprite[] growthSprites; 
 
-    public Sprite[] growthSprites; // optional for visual growth
     private SpriteRenderer spriteRenderer;
 
     void Awake()
