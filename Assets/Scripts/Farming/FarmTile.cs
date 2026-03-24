@@ -34,10 +34,14 @@ public class FarmTile : MonoBehaviour
 
     public void WaterTile()
     {
-        if (isHoed && !isWatered)
+        if (!isHoed) return;
+
+        isWatered = true;
+        Debug.Log("Tile watered: " + gameObject.name);
+
+        if (currentCrop != null && !currentCrop.IsFullyGrown())
         {
-            isWatered = true;
-            Debug.Log("Tile watered: " + gameObject.name);
+            currentCrop.Grow();
         }
     }
 
