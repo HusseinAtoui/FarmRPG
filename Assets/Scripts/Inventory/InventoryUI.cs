@@ -3,45 +3,40 @@ using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
 {
-    public InventorySystem inventory;   // Assign InventoryManager
-    public GameObject slotPrefab;       // Assign InventorySlot prefab
-    public Transform slotParent;        // Assign InventoryPanel
+    public InventorySystem inventory;
+    public GameObject slotPrefab;
+    public Transform slotParent;
 
-    private List<GameObject> slotObjects = new List<GameObject>();
+    private List<InventorySlotUI> slotUIs = new List<InventorySlotUI>();
 
     void Start()
     {
-        DrawInventory();
+        CreateSlots();
+
+        inventory.OnInventoryChanged += UpdateInventoryUI;
+
+        UpdateInventoryUI();
     }
 
-    void OnEnable()
+    void CreateSlots()
     {
-        inventory.OnInventoryChanged += DrawInventory;
-    }
-
-    void OnDisable()
-    {
-        inventory.OnInventoryChanged -= DrawInventory;
-    }
-
-    public void DrawInventory()
-    {
-        // Clear previous slots
-        foreach (var obj in slotObjects)
-        {
-            Destroy(obj);
-        }
-        slotObjects.Clear();
-
-        // Create new slots
-        foreach (var slot in inventory.slots)
+        for (int i = 0; i < inventory.inventorySize; i++)
         {
             GameObject newSlot = Instantiate(slotPrefab, slotParent);
-            slotObjects.Add(newSlot);
 
-            // Get the InventorySlotUI component and set its visuals
-            var slotUI = newSlot.GetComponent<InventorySlotUI>();
-            slotUI.SetSlot(slot.item, slot.quantity);
+            InventorySlotUI slotUI = newSlot.GetComponent<InventorySlotUI>();
+
+            slotUIs.Add(slotUI);
+        }
+    }
+
+    void UpdateInventoryUI()
+    {
+        for (int i = 0; i < slotUIs.Count; i++)
+        {
+            var slot = inventory.slots[i];
+
+            slotUIs[i].SetSlot(slot.item, slot.quantity);
         }
     }
 }

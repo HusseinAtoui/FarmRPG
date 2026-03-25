@@ -15,7 +15,7 @@ public class InventorySystem : MonoBehaviour
         InitializeInventory();
     }
 
-    public void InitializeInventory()
+    void InitializeInventory()
     {
         slots.Clear();
 
@@ -27,24 +27,47 @@ public class InventorySystem : MonoBehaviour
 
     public bool AddItem(ItemData item, int amount)
     {
-        foreach (var slot in slots)
+        if (item == null) return false;
+
+        // STACK FIRST
+        if (item.stackable)
         {
-            if (slot.item == item && item.stackable)
+            foreach (var slot in slots)
             {
-                slot.quantity += amount;
-                OnInventoryChanged?.Invoke();
-                return true;
+                if (slot.item == item && slot.quantity < item.maxStack)
+                {
+                    int spaceLeft = item.maxStack - slot.quantity;
+                    int addAmount = Mathf.Min(spaceLeft, amount);
+
+                    slot.quantity += addAmount;
+                    amount -= addAmount;
+
+                    if (amount <= 0)
+                    {
+                        OnInventoryChanged?.Invoke();
+                        return true;
+                    }
+                }
             }
         }
 
+        // ADD NEW SLOT
         foreach (var slot in slots)
         {
             if (slot.item == null)
             {
+                int addAmount = item.stackable ? Mathf.Min(item.maxStack, amount) : 1;
+
                 slot.item = item;
-                slot.quantity = amount;
-                OnInventoryChanged?.Invoke();
-                return true;
+                slot.quantity = addAmount;
+
+                amount -= addAmount;
+
+                if (amount <= 0)
+                {
+                    OnInventoryChanged?.Invoke();
+                    return true;
+                }
             }
         }
 
@@ -52,13 +75,18 @@ public class InventorySystem : MonoBehaviour
         return false;
     }
 
-    public void RemoveItem(ItemData item, int amount)
+    public bool RemoveItem(ItemData item, int amount)
     {
+        if (item == null) return false;
+
         foreach (var slot in slots)
         {
             if (slot.item == item)
             {
-                slot.quantity -= amount;
+                int removeAmount = Mathf.Min(slot.quantity, amount);
+
+                slot.quantity -= removeAmount;
+                amount -= removeAmount;
 
                 if (slot.quantity <= 0)
                 {
@@ -66,9 +94,40 @@ public class InventorySystem : MonoBehaviour
                     slot.quantity = 0;
                 }
 
-                OnInventoryChanged?.Invoke();
-                return;
+                if (amount <= 0)
+                {
+                    OnInventoryChanged?.Invoke();
+                    return true;
+                }
             }
         }
+
+        return false;
+    }
+
+    public bool HasItem(ItemData item, int amount = 1)
+    {
+        int count = 0;
+
+        foreach (var slot in slots)
+        {
+            if (slot.item == item)
+                count += slot.quantity;
+        }
+
+        return count >= amount;
+    }
+
+    public int GetItemCount(ItemData item)
+    {
+        int count = 0;
+
+        foreach (var slot in slots)
+        {
+            if (slot.item == item)
+                count += slot.quantity;
+        }
+
+        return count;
     }
 }

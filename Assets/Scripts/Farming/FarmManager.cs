@@ -27,7 +27,7 @@ public class FarmManager : MonoBehaviour
                     }
 
                     // Step 2: Plant only if tile was already hoed BEFORE this click
-                    if (tile.CanPlantSeed && selectedSeed != null && HasSeedInInventory(selectedSeed))
+                   if (tile.CanPlantSeed && selectedSeed != null && inventory.HasItem(selectedSeed))
                     {
                         tile.PlantSeed(selectedSeed, cropPrefab);
                         inventory.RemoveItem(selectedSeed, 1);
@@ -50,15 +50,5 @@ public class FarmManager : MonoBehaviour
                 }
             }
         }
-    }
-
-    private bool HasSeedInInventory(ItemData seed)
-    {
-        foreach (var slot in inventory.slots)
-        {
-            if (slot.item == seed && slot.quantity > 0)
-                return true;
-        }
-        return false;
     }
 }
