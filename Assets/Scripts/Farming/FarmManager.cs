@@ -4,7 +4,6 @@ public class FarmManager : MonoBehaviour
 {
     [Header("Inventory & Seed Selection")]
     public InventorySystem inventory;
-    public GameObject cropPrefab;
 
     void Update()
     {
