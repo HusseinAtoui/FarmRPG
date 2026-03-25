@@ -6,6 +6,8 @@ public class InventorySystem : MonoBehaviour
 {
     public int inventorySize = 20;
 
+    public int selectedSlotIndex = 0;
+
     public List<InventorySlot> slots = new List<InventorySlot>();
 
     public event Action OnInventoryChanged;
@@ -129,5 +131,53 @@ public class InventorySystem : MonoBehaviour
         }
 
         return count;
+    }
+
+    public InventorySlot GetSelectedSlot()
+    {
+        if (selectedSlotIndex < 0 || selectedSlotIndex >= slots.Count)
+            return null;
+
+        return slots[selectedSlotIndex];
+    }
+
+    public ItemData GetSelectedItem()
+    {
+        var slot = GetSelectedSlot();
+        return slot != null ? slot.item : null;
+    }
+
+    public void SelectSlot(int index)
+    {
+        if (index < 0 || index >= slots.Count) return;
+
+        selectedSlotIndex = index;
+
+        InventorySlot slot = GetSelectedSlot();
+
+        if (slot != null && slot.item != null)
+            Debug.Log("Selected: " + slot.item.itemName + " x" + slot.quantity);
+        else
+            Debug.Log("Selected: Empty Slot");
+
+        OnInventoryChanged?.Invoke();
+    }
+
+    public bool RemoveFromSelectedSlot(int amount = 1)
+    {
+        var slot = GetSelectedSlot();
+        if (slot == null || slot.item == null) return false;
+
+        int removeAmount = Mathf.Min(slot.quantity, amount);
+        slot.quantity -= removeAmount;
+
+        if (slot.quantity <= 0)
+        {
+            slot.item = null;
+            slot.quantity = 0;
+        }
+
+        OnInventoryChanged?.Invoke();
+        return true;
     }
 }

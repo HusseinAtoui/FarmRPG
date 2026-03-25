@@ -7,6 +7,8 @@ public class InventorySlotUI : MonoBehaviour
     public Image iconImage;
     public TextMeshProUGUI quantityText;
 
+    public GameObject highlight;
+
     public void SetSlot(ItemData item, int quantity)
     {
         if (item != null)
@@ -20,5 +22,11 @@ public class InventorySlotUI : MonoBehaviour
             iconImage.enabled = false;
             quantityText.text = "";
         }
+    }
+
+    public void SetSelected(bool selected)
+    {
+        if (highlight != null)
+            highlight.SetActive(selected);
     }
 }

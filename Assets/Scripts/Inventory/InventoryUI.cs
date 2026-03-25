@@ -37,6 +37,19 @@ public class InventoryUI : MonoBehaviour
             var slot = inventory.slots[i];
 
             slotUIs[i].SetSlot(slot.item, slot.quantity);
+
+            // hightlights selected slot
+            slotUIs[i].SetSelected(i == inventory.selectedSlotIndex);
         }
+    }
+
+    void OnEnable()
+    {
+        inventory.OnInventoryChanged += UpdateInventoryUI;
+    }
+
+    void OnDisable()
+    {
+        inventory.OnInventoryChanged -= UpdateInventoryUI;
     }
 }

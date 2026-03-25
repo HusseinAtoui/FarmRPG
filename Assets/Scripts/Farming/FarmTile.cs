@@ -45,30 +45,37 @@ public class FarmTile : MonoBehaviour
         }
     }
 
-    public void PlantSeed(ItemData seedData, GameObject cropPrefab)
+    public bool PlantSeed(ItemData seedData, GameObject cropPrefab)
     {
         if (!isHoed)
         {
             Debug.Log("Tile must be hoed first!");
-            return;
+            return false;
         }
 
         if (currentCrop != null)
         {
             Debug.Log("Tile already has a crop!");
-            return;
+            return false;
         }
 
         if (seedData.itemType != ItemType.Seed)
         {
             Debug.Log("Not a seed!");
-            return;
+            return false;
         }
 
-        // Spawn crop prefab
+        if (cropPrefab == null)
+        {
+            Debug.LogWarning("No crop prefab assigned for seed: " + seedData.itemName);
+            return false;
+        }
+
+        // Spawn crop prefab as a child of this tile
         currentCrop = Instantiate(cropPrefab, transform.position, Quaternion.identity, transform)
             .GetComponent<Crop>();
 
         Debug.Log("Seed planted: " + seedData.itemName);
+        return true;
     }
 }
