@@ -9,6 +9,8 @@ public class Crop : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
 
+    public ItemData harvestItem; 
+
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -21,8 +23,9 @@ public class Crop : MonoBehaviour
         if (growthStage < maxGrowthStage)
         {
             growthStage++;
-            if (growthSprites.Length > growthStage)
+            if (growthSprites.Length > growthStage) 
                 spriteRenderer.sprite = growthSprites[growthStage];
+
             Debug.Log(cropName + " grew to stage " + growthStage);
         }
     }
@@ -30,5 +33,10 @@ public class Crop : MonoBehaviour
     public bool IsFullyGrown()
     {
         return growthStage >= maxGrowthStage;
+    }
+    
+    public ItemData GetHarvestItem()
+    {
+        return harvestItem;
     }
 }

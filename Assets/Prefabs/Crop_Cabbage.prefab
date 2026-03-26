@@ -108,3 +108,4 @@ MonoBehaviour:
   - {fileID: 1774549293329851621, guid: 76565baf1a4eb467c9cfd4c312be4ed8, type: 3}
   - {fileID: -2719203434195173934, guid: c0754ee7990054b32b86c55d140f6e07, type: 3}
   - {fileID: 2985232015076406287, guid: 4d75aeef59b58497985c469ac932d613, type: 3}
+  harvestItem: {fileID: 11400000, guid: 971ea653c63a54e86b4bfa7e5c8c4ccf, type: 2}

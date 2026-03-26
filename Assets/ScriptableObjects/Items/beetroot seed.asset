@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1e918dad147d34789b9cd69c290f1a11, type: 3}
-  m_Name: Cabbage
+  m_Name: beetroot seed
   m_EditorClassIdentifier: 
-  itemName: 
-  icon: {fileID: 0}
-  itemType: 0
+  itemName: beetroot
+  icon: {fileID: 7929935949600721010, guid: 350e3bb77091342388110583f1a95805, type: 3}
+  itemType: 1
   stackable: 1
   maxStack: 99
   sellPrice: 0
-  cropPrefab: {fileID: 0}
+  cropPrefab: {fileID: 5279752519008776326, guid: 5410eef56ac4b48f69a1db0442dbd5a6, type: 3}

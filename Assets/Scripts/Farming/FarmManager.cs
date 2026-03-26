@@ -15,6 +15,13 @@ public class FarmManager : MonoBehaviour
             if (hit.collider != null)
             {
                 FarmTile tile = hit.collider.GetComponent<FarmTile>();
+
+                if (tile.currentCrop != null && tile.currentCrop.IsFullyGrown())
+                {
+                    tile.HarvestCrop(inventory);
+                    return;
+                }
+                
                 if (tile != null)
                 {
                     // Step 1: Hoe only if NOT hoed

@@ -10,7 +10,7 @@ public class FarmTile : MonoBehaviour
     [Header("Soil Sprites")]
     public Sprite normalSoil;   // unhoed
     public Sprite hoedSoil;     // hoed
-    public Sprite wateredSoil;  // watered (optional for later)
+    public Sprite wateredSoil;  // watered 
 
     public bool CanPlantSeed => isHoed && currentCrop == null;
 
@@ -27,7 +27,7 @@ public class FarmTile : MonoBehaviour
         if (!isHoed)
         {
             isHoed = true;
-            spriteRenderer.sprite = hoedSoil;  // swap sprite
+            spriteRenderer.sprite = hoedSoil;  
             Debug.Log("Tile hoed: " + gameObject.name);
         }
     }
@@ -39,6 +39,7 @@ public class FarmTile : MonoBehaviour
         isWatered = true;
         Debug.Log("Tile watered: " + gameObject.name);
 
+        // currently to test growing
         if (currentCrop != null && !currentCrop.IsFullyGrown())
         {
             currentCrop.Grow();
@@ -77,5 +78,28 @@ public class FarmTile : MonoBehaviour
 
         Debug.Log("Seed planted: " + seedData.itemName);
         return true;
+    }
+
+    public void HarvestCrop(InventorySystem inventory)
+    {
+        if (currentCrop == null)
+            return;
+
+        if (!currentCrop.IsFullyGrown())
+        {
+            Debug.Log("Crop not ready!");
+            return;
+        }
+
+        ItemData harvestItem = currentCrop.GetHarvestItem();
+
+        if (harvestItem != null)
+        {
+            inventory.AddItem(harvestItem, 1);
+            Debug.Log("Harvested: " + harvestItem.itemName);
+        }
+
+        Destroy(currentCrop.gameObject);
+        currentCrop = null;
     }
 }
