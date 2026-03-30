@@ -24,14 +24,14 @@ public class FarmManager : MonoBehaviour
                 
                 if (tile != null)
                 {
-                    // Step 1: Hoe only if NOT hoed
+                    // 1: hoe only if NOT 
                     if (!tile.isHoed)
                     {
                         tile.HoeTile();
-                        return; // stop here, no planting on same click
+                        return; 
                     }
 
-                    // Step 2: Plant only if tile was already hoed BEFORE this click
+                    // 2: plant only if tile was hoed before 
                     ItemData selectedItem = inventory.GetSelectedItem();
 
                     if (tile.CanPlantSeed && selectedItem != null && selectedItem.itemType == ItemType.Seed &&
@@ -64,6 +64,7 @@ public class FarmManager : MonoBehaviour
             }
         }
 
+        // to get first 5 slots 
         if (Input.GetKeyDown(KeyCode.Alpha1)) inventory.SelectSlot(0);
         if (Input.GetKeyDown(KeyCode.Alpha2)) inventory.SelectSlot(1);
         if (Input.GetKeyDown(KeyCode.Alpha3)) inventory.SelectSlot(2);

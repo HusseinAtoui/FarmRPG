@@ -10,7 +10,7 @@ public class FarmTile : MonoBehaviour
     [Header("Soil Sprites")]
     public Sprite normalSoil;   // unhoed
     public Sprite hoedSoil;     // hoed
-    public Sprite wateredSoil;  // watered 
+    public Sprite wateredSoil;  // watered - so far keeping it same 
 
     public bool CanPlantSeed => isHoed && currentCrop == null;
 
@@ -72,7 +72,7 @@ public class FarmTile : MonoBehaviour
             return false;
         }
 
-        // Spawn crop prefab as a child of this tile
+        // spawn crop prefab as a child of this tile
         currentCrop = Instantiate(cropPrefab, transform.position, Quaternion.identity, transform)
             .GetComponent<Crop>();
 

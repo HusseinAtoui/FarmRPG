@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e918dad147d34789b9cd69c290f1a11, type: 3}
   m_Name: Beetroot
   m_EditorClassIdentifier: 
-  itemName: 
-  icon: {fileID: 0}
-  itemType: 0
+  itemName: Beetroot
+  icon: {fileID: 980901043704405067, guid: 9b8ae98a63a8e4a8282987bb3cbf9c2e, type: 3}
+  itemType: 2
   stackable: 1
   maxStack: 99
   sellPrice: 0
