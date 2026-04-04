@@ -24,6 +24,30 @@ public class ItemData : ScriptableObject
     [Header("Economy")]
     public int sellPrice;
 
+    // SEED / CROP SETTINGS
+
     [Header("Seed Settings")]
-    public GameObject cropPrefab;  // only used if itemType == Seed
+    [Tooltip("Prefab that will spawn when this seed is planted")]
+    public GameObject cropPrefab;
+
+    [Tooltip("Sprites for crop growth stages")]
+    public Sprite[] growthSprites;
+
+    [Tooltip("Number of stages before fully grown")]
+    public int maxGrowthStage = 3;
+
+    [Tooltip("Time (seconds) between growth stages AFTER watering")]
+    public float timeBetweenGrowth = 5f;
+
+    public ItemData harvestItem;
+
+    [Header("Harvest Settings")]
+    public int minYield = 1;
+    public int maxYield = 1;
+
+    // TOOL SETTINGS
+
+    [Header("Tool Settings")]
+    [Tooltip("Only used if itemType == Tool")]
+    public int staminaCost = 10;
 }

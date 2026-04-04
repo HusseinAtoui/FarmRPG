@@ -2,41 +2,74 @@ using UnityEngine;
 
 public class Crop : MonoBehaviour
 {
-    public string cropName = "Beetroot";
-    public int growthStage = 0;
-    public int maxGrowthStage = 3;
-    public Sprite[] growthSprites; 
+    public ItemData cropData;
+
+    private int growthStage = 0;
+    private float growthTimer = 0f;
+
+    private bool isWatered = false;
 
     private SpriteRenderer spriteRenderer;
-
-    public ItemData harvestItem; 
 
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        if (growthSprites.Length > 0)
-            spriteRenderer.sprite = growthSprites[0];
+
+        if (cropData != null && cropData.growthSprites.Length > 0)
+        {
+            spriteRenderer.sprite = cropData.growthSprites[0];
+        }
     }
 
-    public void Grow()
+    void Update()
     {
-        if (growthStage < maxGrowthStage)
+        if (!isWatered) return;
+        if (IsFullyGrown()) return;
+
+        growthTimer += Time.deltaTime;
+
+        if (growthTimer >= cropData.timeBetweenGrowth)
+        {
+            Grow();
+            growthTimer = 0f;
+            isWatered = false; // requires watering again
+        }
+    }
+
+    public void Water()
+    {
+        if (IsFullyGrown()) return;
+
+        isWatered = true;
+        Debug.Log("Crop watered: " + cropData.itemName);
+    }
+
+    void Grow()
+    {
+        if (growthStage < cropData.maxGrowthStage)
         {
             growthStage++;
-            if (growthSprites.Length > growthStage) 
-                spriteRenderer.sprite = growthSprites[growthStage];
 
-            Debug.Log(cropName + " grew to stage " + growthStage);
+            if (cropData.growthSprites.Length > growthStage)
+            {
+                spriteRenderer.sprite = cropData.growthSprites[growthStage];
+            }
+
+            Debug.Log(cropData.itemName + " grew to stage " + growthStage);
         }
     }
 
     public bool IsFullyGrown()
     {
-        return growthStage >= maxGrowthStage;
+        return growthStage >= cropData.maxGrowthStage;
     }
-    
+
     public ItemData GetHarvestItem()
     {
-        return harvestItem;
+        if (cropData.harvestItem != null)
+            return cropData.harvestItem;
+
+        Debug.LogWarning("No harvest item set for " + cropData.itemName);
+        return null;
     }
 }

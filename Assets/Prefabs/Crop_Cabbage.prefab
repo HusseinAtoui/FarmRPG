@@ -100,12 +100,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c43147e85f14a30a83dfb0da22c4ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cropName: Cabbage
-  growthStage: 1
-  maxGrowthStage: 3
-  growthSprites:
-  - {fileID: 5731977589800508529, guid: 363e29e7321924c4d893a919c4f84bcb, type: 3}
-  - {fileID: 1774549293329851621, guid: 76565baf1a4eb467c9cfd4c312be4ed8, type: 3}
-  - {fileID: -2719203434195173934, guid: c0754ee7990054b32b86c55d140f6e07, type: 3}
-  - {fileID: 2985232015076406287, guid: 4d75aeef59b58497985c469ac932d613, type: 3}
-  harvestItem: {fileID: 11400000, guid: 971ea653c63a54e86b4bfa7e5c8c4ccf, type: 2}
+  cropData: {fileID: 11400000, guid: 3f5e3c17468b64b4f8e15c5960240782, type: 2}

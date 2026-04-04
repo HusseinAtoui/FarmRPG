@@ -100,12 +100,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c43147e85f14a30a83dfb0da22c4ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cropName: Beetroot
-  growthStage: 1
-  maxGrowthStage: 3
-  growthSprites:
-  - {fileID: 7929935949600721010, guid: 350e3bb77091342388110583f1a95805, type: 3}
-  - {fileID: 2901771626556814720, guid: 6245e339797294d2dba66229d31e1724, type: 3}
-  - {fileID: 6556523641891367704, guid: bd26094e05e0142f08bfad91475c010a, type: 3}
-  - {fileID: 30920674132646118, guid: 26c90948d834a48d2820d2e49cfa7c52, type: 3}
-  harvestItem: {fileID: 11400000, guid: 6bafe480484b0460a95eed956766f7cc, type: 2}
+  cropData: {fileID: 11400000, guid: fd4692bb726b64cc3a631f331caf5b76, type: 2}

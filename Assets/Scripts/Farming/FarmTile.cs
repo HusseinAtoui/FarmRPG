@@ -8,9 +8,9 @@ public class FarmTile : MonoBehaviour
     public Crop currentCrop;
 
     [Header("Soil Sprites")]
-    public Sprite normalSoil;   // unhoed
-    public Sprite hoedSoil;     // hoed
-    public Sprite wateredSoil;  // watered - so far keeping it same 
+    public Sprite normalSoil;   
+    public Sprite hoedSoil;     
+    public Sprite wateredSoil;  
 
     public bool CanPlantSeed => isHoed && currentCrop == null;
 
@@ -27,7 +27,8 @@ public class FarmTile : MonoBehaviour
         if (!isHoed)
         {
             isHoed = true;
-            spriteRenderer.sprite = hoedSoil;  
+            spriteRenderer.sprite = hoedSoil;
+
             Debug.Log("Tile hoed: " + gameObject.name);
         }
     }
@@ -37,12 +38,13 @@ public class FarmTile : MonoBehaviour
         if (!isHoed) return;
 
         isWatered = true;
+        spriteRenderer.sprite = wateredSoil;
+
         Debug.Log("Tile watered: " + gameObject.name);
 
-        // currently to test growing
         if (currentCrop != null && !currentCrop.IsFullyGrown())
         {
-            currentCrop.Grow();
+            currentCrop.Water();
         }
     }
 
@@ -72,9 +74,12 @@ public class FarmTile : MonoBehaviour
             return false;
         }
 
-        // spawn crop prefab as a child of this tile
+        // spawns crop
         currentCrop = Instantiate(cropPrefab, transform.position, Quaternion.identity, transform)
             .GetComponent<Crop>();
+
+        // assign crop data
+        currentCrop.cropData = seedData;
 
         Debug.Log("Seed planted: " + seedData.itemName);
         return true;
@@ -95,11 +100,28 @@ public class FarmTile : MonoBehaviour
 
         if (harvestItem != null)
         {
-            inventory.AddItem(harvestItem, 1);
-            Debug.Log("Harvested: " + harvestItem.itemName);
+            int yieldAmount = Random.Range(currentCrop.cropData.minYield, currentCrop.cropData.maxYield + 1);
+
+            inventory.AddItem(harvestItem, yieldAmount);
+
+            Debug.Log("Harvested: " + harvestItem.itemName + " x" + yieldAmount);
         }
 
         Destroy(currentCrop.gameObject);
         currentCrop = null;
+
+        // reset water state after harvest
+        isWatered = false;
+        spriteRenderer.sprite = hoedSoil;
+    }
+
+    public void ResetWater()
+    {
+        isWatered = false;
+
+        if (isHoed)
+            spriteRenderer.sprite = hoedSoil;
+        else
+            spriteRenderer.sprite = normalSoil;
     }
 }
