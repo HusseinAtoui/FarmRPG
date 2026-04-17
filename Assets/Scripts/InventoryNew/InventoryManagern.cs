@@ -10,6 +10,22 @@ public class InventoryManagern : MonoBehaviour
     {
         Debug.Log("AddItem CALLED");
 
+        // check for stackable and existing item
+        for (int i = 0; i < inventorySlots.Length; i++)
+                {
+                    InventorySlotn slot = inventorySlots[i];
+
+                    InventoryItem ItemInSlot = slot.GetComponentInChildren<InventoryItem>();
+
+                    if (ItemInSlot != null && itemData.stackable && ItemInSlot.itemData == itemData && ItemInSlot.count < itemData.maxStack)
+                    {
+                        ItemInSlot.count++;
+                        ItemInSlot.RefreshCount();    
+                        return true;
+                    }
+                }
+
+        // look for empty slots
         for (int i = 0; i < inventorySlots.Length; i++)
         {
             InventorySlotn slot = inventorySlots[i];
