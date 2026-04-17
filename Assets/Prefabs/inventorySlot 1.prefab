@@ -114,6 +114,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a16ba2da7bff446cbc0b3c3f4baad55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  image: {fileID: 1527441340517476760}
+  selectedColor: {r: 1, g: 0.7058824, b: 0.7058824, a: 1}
+  notSelectedColor: {r: 1, g: 0.9882353, b: 0.89411765, a: 1}
 --- !u!1001 &2791894803065385142
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -254,5 +257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 0}
+  countText: {fileID: 0}
   parentAfterDrag: {fileID: 0}
+  count: 1
   itemData: {fileID: 0}

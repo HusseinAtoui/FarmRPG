@@ -3,8 +3,25 @@ using UnityEngine;
 public class InventoryManagern : MonoBehaviour
 {
     public InventorySlotn[] inventorySlots;
-
     public GameObject InventoryItemPrefab;
+
+    int selectedSlot = -1;
+
+    public void Start()
+    {
+        ChangeSelectedSlot(0);
+    }
+    
+    void ChangeSelectedSlot(int newValue)
+    {
+        if (selectedSlot >=0)
+        {
+            inventorySlots[selectedSlot].Deselect();
+        }
+
+        inventorySlots[newValue].Select();
+        selectedSlot = newValue;
+    }
 
    public bool AddItem(ItemData itemData)
     {
