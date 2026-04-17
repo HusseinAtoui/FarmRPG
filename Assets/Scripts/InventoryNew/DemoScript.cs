@@ -13,4 +13,31 @@ public class DemoScript : MonoBehaviour
         else
             Debug.Log("Failed to pick up " + itemsToPickup[id].itemName);
     }
+
+    public void GetSelectedItem()
+    {
+        ItemData recievedItem = inventoryManager.GetSelectedItem(false);
+        if (recievedItem != null)
+        {
+            Debug.Log("Selected item: " + recievedItem.itemName);
+        }
+        else
+        {
+            Debug.Log("No item selected");
+        }
+    }
+
+    public void UseSelectedItem()
+    {
+        ItemData recievedItem = inventoryManager.GetSelectedItem(true);
+        if (recievedItem != null)
+        {
+            Debug.Log("Used item: " + recievedItem.itemName);
+        }
+        else
+        {
+            Debug.Log("No item used");
+        }
+    }
+
 }
