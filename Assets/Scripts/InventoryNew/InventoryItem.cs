@@ -12,12 +12,40 @@ public class InventoryItem : MonoBehaviour,
     [HideInInspector] public Transform parentAfterDrag;
     private Canvas canvas;
 
+    [HideInInspector] public ItemData itemData;
+
     void Awake()
     {
-        if (image == null)
-            image = GetComponent<Image>();
+       
+        image = GetComponent<Image>();
 
         canvas = GetComponentInParent<Canvas>();
+    }
+
+    public void InitializeItem(ItemData data)
+{
+    itemData = data;
+
+    if (image == null)
+        image = GetComponent<Image>();
+
+    if (itemData == null)
+    {
+        image.enabled = false;
+        return;
+    }
+
+    image.enabled = true;
+    image.sprite = itemData.icon;
+}
+
+    public void ForceRefresh()
+    {
+        if (itemData != null)
+        {
+            image.enabled = true;
+            image.sprite = itemData.icon;
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -26,7 +54,7 @@ public class InventoryItem : MonoBehaviour,
 
         parentAfterDrag = transform.parent;
 
-        transform.SetParent(canvas.transform); 
+        transform.SetParent(canvas.transform);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -38,7 +66,6 @@ public class InventoryItem : MonoBehaviour,
     {
         image.raycastTarget = true;
 
-        // If not dropped on slot → return back
         if (transform.parent == canvas.transform)
         {
             transform.SetParent(parentAfterDrag);
