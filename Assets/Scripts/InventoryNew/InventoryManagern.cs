@@ -6,7 +6,7 @@ public class InventoryManagern : MonoBehaviour
 
     public GameObject InventoryItemPrefab;
 
-   public void AddItem(ItemData itemData)
+   public bool AddItem(ItemData itemData)
     {
         Debug.Log("AddItem CALLED");
 
@@ -18,13 +18,12 @@ public class InventoryManagern : MonoBehaviour
 
             if (ItemInSlot == null)
             {
-                Debug.Log("Spawning item in slot " + i);
                 SpawnNewItem(itemData, slot);
-                return;
+                return true;
             }
         }
 
-        Debug.Log("No empty slots!");
+        return false;
     }
 
     void SpawnNewItem(ItemData itemData, InventorySlotn slot)

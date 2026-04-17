@@ -8,36 +8,42 @@ public class InventoryItem : MonoBehaviour,
     IEndDragHandler
 {
     public Image image;
+    public Text countText;
 
     [HideInInspector] public Transform parentAfterDrag;
-    private Canvas canvas;
-
+    [HideInInspector] public int count = 1;
     [HideInInspector] public ItemData itemData;
 
+    private Canvas canvas;
+    
     void Awake()
     {
-       
         image = GetComponent<Image>();
-
         canvas = GetComponentInParent<Canvas>();
     }
 
     public void InitializeItem(ItemData data)
-{
-    itemData = data;
-
-    if (image == null)
-        image = GetComponent<Image>();
-
-    if (itemData == null)
     {
-        image.enabled = false;
-        return;
+        itemData = data;
+
+        if (image == null)
+            image = GetComponent<Image>();
+
+        if (itemData == null)
+        {
+            image.enabled = false;
+            return;
+        }
+
+        image.enabled = true;
+        image.sprite = itemData.icon;
+        RefreshCount();
     }
 
-    image.enabled = true;
-    image.sprite = itemData.icon;
-}
+    public void RefreshCount()
+    {
+        countText.text = count > 1 ? count.ToString() : "";
+    }
 
     public void ForceRefresh()
     {
