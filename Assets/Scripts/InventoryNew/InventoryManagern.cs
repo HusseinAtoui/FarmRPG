@@ -23,7 +23,8 @@ public class InventoryManagern : MonoBehaviour
             }
         }
     }
-    void ChangeSelectedSlot(int newValue)
+    
+    public void ChangeSelectedSlot(int newValue)
     {
         if (selectedSlot >=0)
         {

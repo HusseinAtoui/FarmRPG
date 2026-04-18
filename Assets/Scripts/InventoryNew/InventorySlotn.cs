@@ -2,11 +2,13 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventorySlotn : MonoBehaviour, IDropHandler
+public class InventorySlotn : MonoBehaviour, IDropHandler, IPointerClickHandler
 {
-
     public Image image;
     public Color selectedColor, notSelectedColor;
+
+    public InventoryManagern manager;
+    public int slotIndex;
     
     public void Awake()
     {
@@ -17,10 +19,17 @@ public class InventorySlotn : MonoBehaviour, IDropHandler
     {
         image.color = selectedColor;
     }
+
     public void Deselect()
     {
         image.color = notSelectedColor;
     }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        manager.ChangeSelectedSlot(slotIndex);
+    }
+
     public void OnDrop(PointerEventData eventData)
     {
         InventoryItem draggedItem = eventData.pointerDrag.GetComponent<InventoryItem>();
@@ -28,11 +37,9 @@ public class InventorySlotn : MonoBehaviour, IDropHandler
         if (draggedItem == null)
             return;
 
-        // If slot already has an item == swap
         if (transform.childCount > 0)
         {
             Transform currentItem = transform.GetChild(0);
-
             currentItem.SetParent(draggedItem.parentAfterDrag);
         }
 
