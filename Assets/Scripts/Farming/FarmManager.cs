@@ -3,7 +3,7 @@ using UnityEngine;
 public class FarmManager : MonoBehaviour
 {
     [Header("Inventory & Seed Selection")]
-    public InventorySystem inventory;
+    public InventoryManagern inventory;
 
     [Header("Player Stamina")]
     public PlayerStamina playerStamina;
@@ -11,7 +11,6 @@ public class FarmManager : MonoBehaviour
     void Update()
     {
         HandleTileClick();
-        HandleHotbarSelection();
         HandleMockSleep();
     }
 
@@ -27,7 +26,8 @@ public class FarmManager : MonoBehaviour
         FarmTile tile = hit.collider.GetComponent<FarmTile>();
         if (tile == null) return;
 
-        ItemData selectedItem = inventory.GetSelectedItem();
+        ItemData selectedItem = inventory.GetSelectedItem(false);
+
         if (selectedItem == null)
         {
             Debug.Log("No item selected");
@@ -77,35 +77,24 @@ public class FarmManager : MonoBehaviour
         }
     }
 
-    void HandleHotbarSelection()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1)) inventory.SelectSlot(0);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) inventory.SelectSlot(1);
-        if (Input.GetKeyDown(KeyCode.Alpha3)) inventory.SelectSlot(2);
-        if (Input.GetKeyDown(KeyCode.Alpha4)) inventory.SelectSlot(3);
-        if (Input.GetKeyDown(KeyCode.Alpha5)) inventory.SelectSlot(4);
-        if (Input.GetKeyDown(KeyCode.Alpha6)) inventory.SelectSlot(5);
-        if (Input.GetKeyDown(KeyCode.Alpha7)) inventory.SelectSlot(6);
-        if (Input.GetKeyDown(KeyCode.Alpha8)) inventory.SelectSlot(7);
-    }
 
     void HandleMockSleep()
-{
-    if (Input.GetKeyDown(KeyCode.P))
     {
-        playerStamina.RestoreFull();
-        Debug.Log("Player slept. Stamina restored. (mock)");
-
-        FarmTile[] tiles = FindObjectsOfType<FarmTile>();
-
-        foreach (FarmTile tile in tiles)
+        if (Input.GetKeyDown(KeyCode.P))
         {
-            // only reset if no crop
-            if (tile.currentCrop == null)
+            playerStamina.RestoreFull();
+            Debug.Log("Player slept. Stamina restored. (mock)");
+
+            FarmTile[] tiles = FindObjectsOfType<FarmTile>();
+
+            foreach (FarmTile tile in tiles)
             {
-                tile.ResetWater();
+                // only reset if no crop
+                if (tile.currentCrop == null)
+                {
+                    tile.ResetWater();
+                }
             }
         }
     }
-}
 }

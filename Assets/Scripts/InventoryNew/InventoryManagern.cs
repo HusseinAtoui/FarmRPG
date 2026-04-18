@@ -23,7 +23,7 @@ public class InventoryManagern : MonoBehaviour
             }
         }
     }
-    
+
     public void ChangeSelectedSlot(int newValue)
     {
         if (selectedSlot >=0)
@@ -107,6 +107,41 @@ public class InventoryManagern : MonoBehaviour
         }
 
         return null;
+    }
+
+     public void RemoveFromSelectedSlot(int amount)
+    {
+        if (selectedSlot < 0) return;
+
+        InventoryItem item = inventorySlots[selectedSlot].GetComponentInChildren<InventoryItem>();
+
+        if (item == null) return;
+
+        item.count -= amount;
+
+        if (item.count <= 0)
+        {
+            Destroy(item.gameObject);
+        }
+        else
+        {
+            item.RefreshCount();
+        }
+    }
+
+    public bool HasItem(ItemData itemData)
+    {
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            InventoryItem item = inventorySlots[i].GetComponentInChildren<InventoryItem>();
+
+            if (item != null && item.itemData == itemData)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

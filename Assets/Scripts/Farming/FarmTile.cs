@@ -85,8 +85,9 @@ public class FarmTile : MonoBehaviour
         return true;
     }
 
-    public void HarvestCrop(InventorySystem inventory)
+    public void HarvestCrop(InventoryManagern inventory)
     {
+
         if (currentCrop == null)
             return;
 
@@ -102,7 +103,10 @@ public class FarmTile : MonoBehaviour
         {
             int yieldAmount = Random.Range(currentCrop.cropData.minYield, currentCrop.cropData.maxYield + 1);
 
-            inventory.AddItem(harvestItem, yieldAmount);
+            for (int i = 0; i < yieldAmount; i++)
+            {
+                inventory.AddItem(harvestItem);
+            }
 
             Debug.Log("Harvested: " + harvestItem.itemName + " x" + yieldAmount);
         }
