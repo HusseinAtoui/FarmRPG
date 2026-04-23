@@ -23,7 +23,7 @@ public class FarmManager : MonoBehaviour
 
         if (hit.collider == null) return;
 
-        // 🌳 ANY WOOD RESOURCE (tree, bush, stump, etc.)
+        // ANY RESOURCE 
         IDamageable damageable = hit.collider.GetComponent<IDamageable>();
 
         if (damageable != null)
