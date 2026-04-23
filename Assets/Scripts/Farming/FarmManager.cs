@@ -23,73 +23,104 @@ public class FarmManager : MonoBehaviour
 
         if (hit.collider == null) return;
 
+        // 1. CHECK TREE FIRST
+        TreeObject tree = hit.collider.GetComponent<TreeObject>();
+        if (tree != null)
+        {
+            TryHitTree(tree);
+            return;
+        }
+
+        // 2. FARM TILE LOGIC
         FarmTile tile = hit.collider.GetComponent<FarmTile>();
         if (tile == null) return;
 
-        ItemData selectedItem = inventory.GetSelectedItem(false);
+        ItemData item = inventory.GetSelectedItem(false);
 
-        if (selectedItem == null)
+        if (item == null)
         {
             Debug.Log("No item selected");
             return;
         }
 
-        // TOOL ACTIONS
-        if (selectedItem.itemType == ItemType.Tool)
+        if (item.itemType == ItemType.Tool)
         {
-            switch (selectedItem.itemName)
-            {
-                case "Hoe":
-                    if (!tile.isHoed && playerStamina.UseStamina(selectedItem.staminaCost))
-                    {
-                        tile.HoeTile();
-                    }
-                    break;
-
-                case "Watering Can":
-                    if (tile.isHoed && playerStamina.UseStamina(selectedItem.staminaCost))
-                    {
-                        tile.WaterTile();
-                    }
-                    break;
-
-                case "Sickle":
-                    if (tile.currentCrop != null && tile.currentCrop.IsFullyGrown() && playerStamina.UseStamina(selectedItem.staminaCost))
-                    {
-                        tile.HarvestCrop(inventory);
-                    }
-                    break;
-
-                // Add Axe, Pickaxe etc. here later
-            }
+            HandleToolOnTile(item, tile);
         }
-        // SEED ACTION
-        else if (selectedItem.itemType == ItemType.Seed)
+        else if (item.itemType == ItemType.Seed)
         {
-            if (tile.CanPlantSeed && inventory.HasItem(selectedItem))
+            HandleSeedOnTile(item, tile);
+        }
+    }
+
+    // TREE LOGIC
+    void TryHitTree(TreeObject tree)
+    {
+        ItemData item = inventory.GetSelectedItem(false);
+
+        if (item == null) return;
+
+        if (item.itemType == ItemType.Tool && item.itemName == "Axe")
+        {
+            if (playerStamina.UseStamina(item.staminaCost))
             {
-                bool planted = tile.PlantSeed(selectedItem, selectedItem.cropPrefab);
-                if (planted)
-                {
-                    inventory.RemoveFromSelectedSlot(1);
-                }
+                tree.HitTree();
             }
         }
     }
 
+    // TILE TOOL LOGIC
+    void HandleToolOnTile(ItemData item, FarmTile tile)
+    {
+        switch (item.itemName)
+        {
+            case "Hoe":
+                if (!tile.isHoed && playerStamina.UseStamina(item.staminaCost))
+                    tile.HoeTile();
+                break;
 
+            case "Watering Can":
+                if (tile.isHoed && playerStamina.UseStamina(item.staminaCost))
+                    tile.WaterTile();
+                break;
+
+            case "Sickle":
+                if (tile.currentCrop != null &&
+                    tile.currentCrop.IsFullyGrown() &&
+                    playerStamina.UseStamina(item.staminaCost))
+                {
+                    tile.HarvestCrop(inventory);
+                }
+                break;
+        }
+    }
+
+    // TILE SEED LOGIC
+    void HandleSeedOnTile(ItemData item, FarmTile tile)
+    {
+        if (tile.CanPlantSeed && inventory.HasItem(item))
+        {
+            bool planted = tile.PlantSeed(item, item.cropPrefab);
+
+            if (planted)
+            {
+                inventory.RemoveFromSelectedSlot(1);
+            }
+        }
+    }
+
+    // SLEEP TEST
     void HandleMockSleep()
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
             playerStamina.RestoreFull();
-            Debug.Log("Player slept. Stamina restored. (mock)");
+            Debug.Log("Player slept. Stamina restored.");
 
             FarmTile[] tiles = FindObjectsOfType<FarmTile>();
 
             foreach (FarmTile tile in tiles)
             {
-                // only reset if no crop
                 if (tile.currentCrop == null)
                 {
                     tile.ResetWater();
