@@ -224,4 +224,24 @@ public class InventoryManagern : MonoBehaviour
 
         Debug.Log("Starter items added!");
     }
+
+    public void DeleteSelectedItem()
+    {
+        if (selectedSlot < 0) return;
+
+        InventoryItem item = inventorySlots[selectedSlot].GetComponentInChildren<InventoryItem>();
+
+        if (item == null) return;
+
+        item.count--;
+
+        if (item.count <= 0)
+        {
+            Destroy(item.gameObject);
+        }
+        else
+        {
+            item.RefreshCount();
+        }
+    }
 }

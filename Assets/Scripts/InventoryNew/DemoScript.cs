@@ -5,6 +5,15 @@ public class DemoScript : MonoBehaviour
    public InventoryManagern inventoryManager;
    public ItemData[] itemsToPickup;
 
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            inventoryManager.DeleteSelectedItem();
+        }
+    }
+
    public void PickupItem(int id)
     {
         bool result = inventoryManager.AddItem(itemsToPickup[id]);
@@ -38,6 +47,11 @@ public class DemoScript : MonoBehaviour
         {
             Debug.Log("No item used");
         }
+    }
+
+    void DeleteSelectedItem()
+    {
+        inventoryManager.DeleteSelectedItem();
     }
 
 }
