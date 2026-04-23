@@ -1,15 +1,39 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class InventoryManagern : MonoBehaviour
 {
     public InventorySlotn[] inventorySlots;
     public GameObject InventoryItemPrefab;
 
+    [Header("Item Database (ALL items in game)")]
+    public ItemData[] allItems; // drag all items to inspector
+
+    [Header("Starter Items")]
+    public ItemData[] starterItems;
+
     int selectedSlot = -1;
 
-    public void Start()
+    void Start()
     {
+        // PlayerPrefs.DeleteKey("Inventory"); resets inventory for testing 
+
+        if (PlayerPrefs.HasKey("Inventory"))
+        {
+            LoadInventory();
+        }
+        else
+        {
+            GiveStarterItems();
+            SaveInventory();
+        }
+
         ChangeSelectedSlot(0);
+    }
+
+    void OnApplicationQuit()
+    {
+        SaveInventory();
     }
 
     private void Update()
@@ -26,44 +50,37 @@ public class InventoryManagern : MonoBehaviour
 
     public void ChangeSelectedSlot(int newValue)
     {
-        if (selectedSlot >=0)
-        {
+        if (selectedSlot >= 0)
             inventorySlots[selectedSlot].Deselect();
-        }
 
         inventorySlots[newValue].Select();
         selectedSlot = newValue;
     }
 
-   public bool AddItem(ItemData itemData)
+    public bool AddItem(ItemData itemData)
     {
-        Debug.Log("AddItem CALLED");
-
-        // check for stackable and existing item
-        for (int i = 0; i < inventorySlots.Length; i++)
-                {
-                    InventorySlotn slot = inventorySlots[i];
-
-                    InventoryItem ItemInSlot = slot.GetComponentInChildren<InventoryItem>();
-
-                    if (ItemInSlot != null && itemData.stackable && ItemInSlot.itemData == itemData && ItemInSlot.count < itemData.maxStack)
-                    {
-                        ItemInSlot.count++;
-                        ItemInSlot.RefreshCount();    
-                        return true;
-                    }
-                }
-
-        // look for empty slots
+        // stack
         for (int i = 0; i < inventorySlots.Length; i++)
         {
-            InventorySlotn slot = inventorySlots[i];
+            InventoryItem itemInSlot = inventorySlots[i].GetComponentInChildren<InventoryItem>();
 
-            InventoryItem ItemInSlot = slot.GetComponentInChildren<InventoryItem>();
-
-            if (ItemInSlot == null)
+            if (itemInSlot != null &&
+                itemData.stackable &&
+                itemInSlot.itemData == itemData &&
+                itemInSlot.count < itemData.maxStack)
             {
-                SpawnNewItem(itemData, slot);
+                itemInSlot.count++;
+                itemInSlot.RefreshCount();
+                return true;
+            }
+        }
+
+        // empty slot
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            if (inventorySlots[i].IsEmpty())
+            {
+                SpawnNewItem(itemData, inventorySlots[i]);
                 return true;
             }
         }
@@ -73,43 +90,38 @@ public class InventoryManagern : MonoBehaviour
 
     void SpawnNewItem(ItemData itemData, InventorySlotn slot)
     {
-        GameObject newItemGo = Instantiate(InventoryItemPrefab, slot.transform);
-        InventoryItem inventoryItem = newItemGo.GetComponent<InventoryItem>();
-        inventoryItem.InitializeItem(itemData);
+        GameObject newItem = Instantiate(InventoryItemPrefab, slot.transform);
+        InventoryItem item = newItem.GetComponent<InventoryItem>();
+        item.InitializeItem(itemData);
     }
 
     public ItemData GetSelectedItem(bool use)
     {
-        if (selectedSlot >= 0)
+        if (selectedSlot < 0) return null;
+
+        InventoryItem item = inventorySlots[selectedSlot].GetComponentInChildren<InventoryItem>();
+
+        if (item != null)
         {
-            InventoryItem item = inventorySlots[selectedSlot].GetComponentInChildren<InventoryItem>();
+            ItemData data = item.itemData;
 
-            if (item != null)
+            if (use)
             {
-                ItemData itemData = item.itemData;
+                item.count--;
 
-                if (use)
-                {
-                    item.count--;
-
-                    if (item.count <= 0)
-                    {
-                        Destroy(item.gameObject);
-                    }
-                    else
-                    {
-                        item.RefreshCount();
-                    }
-                }
-
-                return itemData;
+                if (item.count <= 0)
+                    Destroy(item.gameObject);
+                else
+                    item.RefreshCount();
             }
+
+            return data;
         }
 
         return null;
     }
 
-     public void RemoveFromSelectedSlot(int amount)
+    public void RemoveFromSelectedSlot(int amount)
     {
         if (selectedSlot < 0) return;
 
@@ -120,29 +132,96 @@ public class InventoryManagern : MonoBehaviour
         item.count -= amount;
 
         if (item.count <= 0)
-        {
             Destroy(item.gameObject);
-        }
         else
-        {
             item.RefreshCount();
-        }
     }
 
     public bool HasItem(ItemData itemData)
     {
+        foreach (var slot in inventorySlots)
+        {
+            InventoryItem item = slot.GetComponentInChildren<InventoryItem>();
+
+            if (item != null && item.itemData == itemData)
+                return true;
+        }
+        return false;
+    }
+
+    // SAVE SYSTEM
+
+    void SaveInventory()
+    {
+        List<InventorySaveData> saveData = new List<InventorySaveData>();
+
         for (int i = 0; i < inventorySlots.Length; i++)
         {
             InventoryItem item = inventorySlots[i].GetComponentInChildren<InventoryItem>();
 
-            if (item != null && item.itemData == itemData)
+            if (item != null)
             {
-                return true;
+                InventorySaveData data = new InventorySaveData
+                {
+                    itemName = item.itemData.itemName,
+                    count = item.count,
+                    slotIndex = i
+                };
+
+                saveData.Add(data);
             }
         }
 
-        return false;
+        string json = JsonUtility.ToJson(new Wrapper { items = saveData });
+        PlayerPrefs.SetString("Inventory", json);
+        PlayerPrefs.Save();
     }
 
+    void LoadInventory()
+    {
+        if (!PlayerPrefs.HasKey("Inventory")) return;
 
+        string json = PlayerPrefs.GetString("Inventory");
+        Wrapper wrapper = JsonUtility.FromJson<Wrapper>(json);
+
+        foreach (var data in wrapper.items)
+        {
+            ItemData itemData = FindItemByName(data.itemName);
+
+            if (itemData != null)
+            {
+                SpawnNewItem(itemData, inventorySlots[data.slotIndex]);
+
+                InventoryItem item = inventorySlots[data.slotIndex].GetComponentInChildren<InventoryItem>();
+                item.count = data.count;
+                item.RefreshCount();
+            }
+        }
+    }
+
+    ItemData FindItemByName(string name)
+    {
+        foreach (var item in allItems)
+        {
+            if (item.itemName == name)
+                return item;
+        }
+        return null;
+    }
+
+    [System.Serializable]
+    private class Wrapper
+    {
+        public List<InventorySaveData> items;
+    }
+
+    void GiveStarterItems()
+    {
+        foreach (var item in starterItems)
+        {
+            AddItem(item);
+        }
+
+        Debug.Log("Starter items added!");
+    }
 }
