@@ -30,12 +30,14 @@ public class FarmManager : MonoBehaviour
         {
             ItemData heldItem = inventory.GetSelectedItem(false);
 
-            if (heldItem != null &&
-                heldItem.itemType == ItemType.Tool &&
-                heldItem.itemName == "Axe" &&
-                playerStamina.UseStamina(heldItem.staminaCost))
+            if (heldItem != null && heldItem.itemType == ItemType.Tool)
             {
-                damageable.Hit(1);
+                if (playerStamina.UseStamina(heldItem.staminaCost))
+                {
+                    damageable.Hit(1);
+                }
+
+                return;
             }
 
             return;
