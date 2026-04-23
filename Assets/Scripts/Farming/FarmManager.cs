@@ -23,53 +23,46 @@ public class FarmManager : MonoBehaviour
 
         if (hit.collider == null) return;
 
-        // 1. CHECK TREE FIRST
-        TreeObject tree = hit.collider.GetComponent<TreeObject>();
-        if (tree != null)
+        // 🌳 ANY WOOD RESOURCE (tree, bush, stump, etc.)
+        IDamageable damageable = hit.collider.GetComponent<IDamageable>();
+
+        if (damageable != null)
         {
-            TryHitTree(tree);
+            ItemData heldItem = inventory.GetSelectedItem(false);
+
+            if (heldItem != null &&
+                heldItem.itemType == ItemType.Tool &&
+                heldItem.itemName == "Axe" &&
+                playerStamina.UseStamina(heldItem.staminaCost))
+            {
+                damageable.Hit(1);
+            }
+
             return;
         }
 
-        // 2. FARM TILE LOGIC
+        // 🌱 FARM TILE
         FarmTile tile = hit.collider.GetComponent<FarmTile>();
         if (tile == null) return;
 
-        ItemData item = inventory.GetSelectedItem(false);
+        ItemData heldItemTile = inventory.GetSelectedItem(false);
 
-        if (item == null)
+        if (heldItemTile == null)
         {
             Debug.Log("No item selected");
             return;
         }
 
-        if (item.itemType == ItemType.Tool)
+        if (heldItemTile.itemType == ItemType.Tool)
         {
-            HandleToolOnTile(item, tile);
+            HandleToolOnTile(heldItemTile, tile);
         }
-        else if (item.itemType == ItemType.Seed)
+        else if (heldItemTile.itemType == ItemType.Seed)
         {
-            HandleSeedOnTile(item, tile);
-        }
-    }
-
-    // TREE LOGIC
-    void TryHitTree(TreeObject tree)
-    {
-        ItemData item = inventory.GetSelectedItem(false);
-
-        if (item == null) return;
-
-        if (item.itemType == ItemType.Tool && item.itemName == "Axe")
-        {
-            if (playerStamina.UseStamina(item.staminaCost))
-            {
-                tree.HitTree();
-            }
+            HandleSeedOnTile(heldItemTile, tile);
         }
     }
 
-    // TILE TOOL LOGIC
     void HandleToolOnTile(ItemData item, FarmTile tile)
     {
         switch (item.itemName)
@@ -95,7 +88,6 @@ public class FarmManager : MonoBehaviour
         }
     }
 
-    // TILE SEED LOGIC
     void HandleSeedOnTile(ItemData item, FarmTile tile)
     {
         if (tile.CanPlantSeed && inventory.HasItem(item))
@@ -109,13 +101,11 @@ public class FarmManager : MonoBehaviour
         }
     }
 
-    // SLEEP TEST
     void HandleMockSleep()
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
             playerStamina.RestoreFull();
-            Debug.Log("Player slept. Stamina restored.");
 
             FarmTile[] tiles = FindObjectsOfType<FarmTile>();
 
