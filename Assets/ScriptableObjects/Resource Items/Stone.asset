@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e918dad147d34789b9cd69c290f1a11, type: 3}
   m_Name: Stone
   m_EditorClassIdentifier: 
-  itemName: 
-  icon: {fileID: 0}
-  itemType: 0
+  itemName: Stone
+  icon: {fileID: -2182124076254010665, guid: b142f7b75cda64ee1acc809a2b173d84, type: 3}
+  itemType: 3
   stackable: 1
   maxStack: 99
   sellPrice: 0

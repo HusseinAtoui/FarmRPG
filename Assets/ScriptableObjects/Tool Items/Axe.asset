@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e918dad147d34789b9cd69c290f1a11, type: 3}
   m_Name: Axe
   m_EditorClassIdentifier: 
-  itemName: 
-  icon: {fileID: 0}
+  itemName: Axe
+  icon: {fileID: 6674386295937086461, guid: c4a6d9aaf4eee47ea8a74548e8938df1, type: 3}
   itemType: 0
-  stackable: 1
-  maxStack: 99
+  stackable: 0
+  maxStack: 1
   sellPrice: 0
   cropPrefab: {fileID: 0}
   growthSprites: []
@@ -25,4 +25,4 @@ MonoBehaviour:
   harvestItem: {fileID: 0}
   minYield: 1
   maxYield: 1
-  staminaCost: 10
+  staminaCost: 6
